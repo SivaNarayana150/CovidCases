@@ -71,10 +71,9 @@ app.get("/states/:stateId/", async (request, response) => {
 
 //API 3 Create a district in the district table
 app.post("/districts/", async (request, response) => {
-  const { districtDetails } = request.body;
+  const districtDetails = request.body;
 
   const {
-    districtId,
     districtName,
     stateId,
     cases,
@@ -85,8 +84,8 @@ app.post("/districts/", async (request, response) => {
   const postNewDistrictQuery = `
     INSERT INTO 
     district
-    (district_id,district_name,state_id,cases,cured,active,deaths)
-    VALUES('${districtId}','${districtName}','${stateId}','${cases}','${cured}','${active}','${deaths}');`;
+    (district_name,state_id,cases,cured,active,deaths)
+    VALUES('${districtName}','${stateId}','${cases}','${cured}','${active}','${deaths}');`;
   const dbResponse = await db.run(postNewDistrictQuery);
   response.send("District Successfully Added");
 });
@@ -154,7 +153,7 @@ app.get("/states/:stateId/stats/", async (request, response) => {
     SUM(cured) ,
     SUM(active) ,
     SUM(deaths) 
-    FROM state
+    FROM district
     WHERE state_id=${stateId};
     `;
   const dbResponse = await db.get(queryToGetStats);
